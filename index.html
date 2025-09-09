@@ -6,70 +6,102 @@
     <title>The Halloween Heist | The Wandering Princess Emporium</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f4f1e8;
-            color: #2d1b3d;
-        }
-        .hero-bg {
-            background: linear-gradient(135deg, #2d1b3d 0%, #8b5a3c 100%);
+            background-color: #ffffff;
+            color: #333333;
         }
         .container-card {
             background-color: #ffffff;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
         }
         .buy-button {
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-            background-color: #ff8c42;
+            background-color: #4fc3f7;
             color: white;
             padding: 1rem 2.5rem;
             font-weight: bold;
             border-radius: 9999px;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
         .buy-button:hover {
             transform: scale(1.05);
-            box-shadow: 0 8px 20px rgba(255, 140, 66, 0.4);
+            box-shadow: 0 8px 20px rgba(79, 195, 247, 0.4);
+        }
+        .sample-button {
+            background-color: #ffeb3b;
+            color: #333333;
+            font-weight: bold;
+            padding: 1rem 2.5rem;
+            border-radius: 9999px;
+            text-decoration: none;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            animation: glow 1.5s ease-in-out infinite alternate;
+        }
+        .sample-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(255, 235, 59, 0.6);
+        }
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 5px #ffeb3b, 0 0 10px #ffeb3b, 0 0 15px #ffeb3b;
+            }
+            to {
+                box-shadow: 0 0 15px #ffeb3b, 0 0 25px #ffeb3b, 0 0 35px #ffeb3b;
+            }
+        }
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        @media (min-width: 640px) {
+            .button-group {
+                flex-direction: row;
+                justify-content: flex-start;
+            }
         }
     </style>
 </head>
 <body class="p-8">
     <div class="min-h-screen flex items-center justify-center p-4">
         <div class="container-card max-w-4xl w-full p-8 md:p-12 lg:p-16 text-center">
-            <!-- Header with Brand Name -->
-            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#ff8c42] mb-4">
+            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-[#4fc3f7] mb-4">
                 The Wandering Princess Emporium
             </h1>
             <p class="text-lg sm:text-xl text-gray-600 mb-12">
                 Enchanting Adventures for Young Wanderers
             </p>
 
-            <!-- Product Section -->
             <div class="flex flex-col lg:flex-row items-center justify-center gap-12">
-                <!-- Book Cover (Placeholder) -->
+                <!-- Real Book Cover -->
                 <div class="w-full lg:w-1/2 flex justify-center">
-                    <img src="https://placehold.co/400x500/2d1b3d/f4f1e8?text=Wandering+Prince:+The+Halloween+Heist" 
-                         alt="The Halloween Heist Book Cover" 
+                    <img src="images/halloween-heist-cover.jpg"
+                         alt="The Halloween Heist Book Cover"
                          class="rounded-xl shadow-2xl transition-transform duration-300 hover:scale-105">
                 </div>
 
-                <!-- Book Description and Buy Button -->
+                <!-- Book Description and Buttons -->
                 <div class="w-full lg:w-1/2 text-left">
-                    <h2 class="text-3xl sm:text-4xl font-bold text-[#2d1b3d] mb-4">
+                    <h2 class="text-3xl sm:text-4xl font-bold text-[#333333] mb-4">
                         The Halloween Heist
                     </h2>
                     <p class="text-gray-700 leading-relaxed mb-6">
-                        Join Prince Peregrine, Wisp the Bat, and Dusk the Shadow-Weaver on a magical adventure to save Halloween! This interactive e-book is a fully immersive experience with clickable words, sound effects, and a quiz to test your knowledge. Perfect for children aged 6-8.
+                        Join Prince Peregrine, Wisp the Bat, and Dusk the Shadow-Weaver on a magical adventure to save Halloween! 
+                        This interactive e-book is a fully immersive experience with clickable words, sound effects, and a quiz to test your knowledge. 
+                        Perfect for children aged 6-8.
                     </p>
                     <p class="text-gray-500 italic mb-8">
                         Experience the story like never before with interactive fun on every page!
                     </p>
 
-                    <!-- Call to Action Button -->
-                    <a href="YOUR_GUMROAD_OR_STRIPE_LINK_HERE" class="inline-block buy-button">
-                        Buy Now for $4.99
-                    </a>
+                    <div class="button-group">
+                        <a href="YOUR_GUMROAD_OR_STRIPE_LINK_HERE" class="buy-button">
+                            Buy Now for $4.99
+                        </a>
+                        <a href="the-halloween-heist/sample/index.html" class="sample-button">
+                            📖 Read a Free Sample
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
