@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Halloween Heist - Interactive E-book</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@400;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/@tonejs/tone@14.7.77/build/Tone.min.js"></script>
+    <style>
+        body {
+            font-family: 'Comic Neue', cursive, sans-serif;
+            background: linear-gradient(135deg, #2d1b3d, #8b5a3c);
+            color: #f4f1e8;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(139, 90, 60, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .title {
+            font-size: 3em;
+            color: #ff8c42;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            margin-bottom: 10px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        @keyframes glow {
+            from { text-shadow: 3px 3px 6px rgba(255,140,66,0.5); }
+            to { text-shadow: 3px 3px 20px rgba(255,140,66,0.8); }
+        }
+        .chapter {
+            margin-bottom: 40px;
+            padding: 20px;
+            background: rgba(244, 241, 232, 0.1);
+            border-radius: 15px;
+            border-left: 5px solid #ff8c42;
+        }
+        .chapter-title {
+            font-size: 1.8em;
+            color: #ff8c42;
+            margin-bottom: 15px;
+        }
+        .vocab-word {
+            background: rgba(255, 140, 66, 0.2);
+            padding: 2px 6px;
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .vocab-word:hover {
+            background: rgba(255, 140, 66, 0.4);
+            transform: scale(1.05);
+        }
+        .definition {
+            display: none;
+            position: absolute;
+            background: #2d1b3d;
+            color: #f4f1e8;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            z-index: 100;
+            width: 200px;
+            top: 25px;
+            left: 0;
+        }
+        .definition.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .character-highlight {
+            color: #7fb3d3;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .character-highlight:hover {
+            color: #a8d8ea;
+            text-shadow: 0 0 8px rgba(127, 179, 211, 0.6);
+        }
+        .sound-effect {
+            color: #ff6b6b;
+            font-style: italic;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .sound-effect:hover {
+            color: #ff8e8e;
+            transform: scale(1.1);
+        }
+        .think-box {
+            background: rgba(127, 179, 211, 0.2);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border-left: 4px solid #7fb3d3;
+        }
+        .think-title {
+            font-weight: bold;
+            color: #7fb3d3;
+            margin-bottom: 8px;
+        }
+        .quiz-section {
+            background: rgba(255, 107, 107, 0.2);
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 15px;
+            border: 2px solid #ff6b6b;
+        }
+        .quiz-question {
+            margin-bottom: 15px;
+        }
+        .quiz-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .quiz-option {
+            background: rgba(244, 241, 232, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .quiz-option:hover {
+            background: rgba(255, 140, 66, 0.3);
+            border-color: #ff8c42;
+        }
+        .quiz-option.correct {
+            background: rgba(134, 239, 172, 0.3);
+            border-color: #22c55e;
+        }
+        .quiz-option.incorrect {
+            background: rgba(248, 113, 113, 0.3);
+            border-color: #ef4444;
+        }
+        .reading-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .control-btn {
+            background: #ff8c42;
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .control-btn:hover {
+            background: #ff6b2b;
+            transform: translateY(-2px);
+        }
+        .progress-bar {
+            height: 6px;
+            background: rgba(255, 140, 66, 0.3);
+            border-radius: 3px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #ff8c42;
+            width: 0%;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+        .activity-box {
+            background: rgba(168, 216, 234, 0.2);
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 15px;
+            border: 2px solid #a8d8ea;
+        }
+        .glitter-trail {
+            display: inline-block;
+            background: linear-gradient(45deg, #ff8c42, #7fb3d3, #ff6b6b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: sparkle 1.5s ease-in-out infinite;
+        }
+        @keyframes sparkle {
+            0%, 100% { opacity: 0.7; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.1); }
+        }
+    </style>
+</head>
+<body>
+    <div class="reading-controls">
+        <button class="control-btn" onclick="toggleReadAloud()">🔊 Read Aloud</button>
+        <button class="control-btn" onclick="adjustFontSize('+')">A+</button>
+        <button class="control-btn" onclick="adjustFontSize('-')">A-</button>
+    </div>
+
+    <div class="container">
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar"></div>
+        </div>
+
+        <div class="header">
+            <h1 class="title">🎃 The Halloween Heist 🦇</h1>
+            <p style="font-size: 1.2em; color: #a8d8ea;">A Magical Interactive Adventure for Ages 6–8</p>
+        </div>
+
+        <div class="chapter">
+            <h2 class="chapter-title">Chapter 1: The Lonely Prince</h2>
+            <p><span class="character-highlight" onclick="showCharacterInfo('Peregrine')">Prince Peregrine</span> wasn't like other royals. While they practiced royal waves, he climbed big trees and explored the castle's dusty corners. His heart wanted a friend who loved adventure as much as he did.</p>
+            <p>On Halloween night, the kingdom was full of fun. All the candy would be put in the <span class="vocab-word" onclick="showDefinition(this, 'A special strong room where treasures are kept safe')">Royal Candy Vault<span class="definition"></span></span>. At sunrise, everyone would get their share. This was the kingdom's favorite <span class="vocab-word" onclick="showDefinition(this, 'Something special that people do every year')">tradition<span class="definition"></span></span>.</p>
+            <div class="think-box">
+                <div class="think-title">🤔 Think About It:</div>
+                What do you think makes Prince Peregrine different from other princes?
+            </div>
+        </div>
+
+        <div class="chapter">
+            <h2 class="chapter-title">Chapter 2: The Mystery Begins</h2>
+            <p>Dressed in a knight costume he made himself, Peregrine walked through the busy streets. He wove past laughing ghosts and wobbly witches. Suddenly, a little shadow <span class="sound-effect" onclick="playSound('whoosh')">*whoosh*</span> zipped past his ear.</p>
+            <p>"Hello!" said a cheerful voice.</p>
+            <p>It was <span class="character-highlight" onclick="showCharacterInfo('Wisp')">Wisp</span>, a friendly bat with big ears and bright, <span class="vocab-word" onclick="showDefinition(this, 'Wanting to know about things and explore')">curious<span class="definition"></span></span> eyes. He liked quiet flights at night better than loud crowds.</p>
+            <p>Before they could talk more, a cry of <span class="vocab-word" onclick="showDefinition(this, 'Feeling very worried and scared')">panic<span class="definition"></span></span> came from the town square.</p>
+            <p>"The candy! It's all gone!" <span class="sound-effect" onclick="playSound('gasp')">*gasp*</span></p>
+
+            <div class="activity-box">
+                <strong>🎨 Interactive Activity:</strong> Click on the character names to learn more about them!
+            </div>
+        </div>
+
+        <div class="chapter">
+            <h2 class="chapter-title">Chapter 3: Following the Clues</h2>
+            <p>"Who would do such a thing?" Wisp whispered.</p>
+            <p>Peregrine saw something shiny on the ground. "<span class="glitter-trail">Purple glitter</span>," he said, pointing to a faint <span class="vocab-word" onclick="showDefinition(this, 'Marks left behind that show where someone went')">trail<span class="definition"></span></span>. "Only <span class="character-highlight" onclick="showCharacterInfo('Dusk')">Dusk the Shadow-Weaver</span> uses glitter this sparkly."</p>
+            <p>Dusk was known for harmless magic pranks, but this was a very big trick.</p>
+
+            <div class="think-box">
+                <div class="think-title">🔍 Detective Question:</div>
+                What clue did Peregrine find? How do you think this will help them solve the mystery?
+            </div>
+
+            <div class="quiz-section">
+                <h3>🧩 Quick Quiz: Who is Dusk?</h3>
+                <div class="quiz-question">What is Dusk known for?</div>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Stealing candy from children</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">Playing harmless magic pranks</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Being the kingdom's baker</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chapter">
+            <h2 class="chapter-title">Chapter 4: The Great Chase</h2>
+            <p>The <span class="glitter-trail">glitter trail</span> led them on a chase. They crept past smiling scarecrows. Wisp flew ahead, finding safe paths under fake spiderwebs. They walked past houses playing <span class="sound-effect" onclick="playSound('spooky')">"spooky music"</span>. Their <span class="vocab-word" onclick="showDefinition(this, 'An important job or task')">mission<span class="definition"></span></span> was more exciting than any normal Halloween.</p>
+            <p>The trail wound through narrow <span class="vocab-word" onclick="showDefinition(this, 'Narrow paths between buildings')">alleys<span class="definition"></span></span> where jack-o'-lanterns made dancing shadows. Sticky candy wrappers marked their path, like sugary breadcrumbs.</p>
+
+            <div class="activity-box">
+                <strong>🎵 Sound Effects:</strong> Click on the italic text to hear spooky sounds!
+            </div>
+        </div>
+
+        <div class="chapter">
+            <h2 class="chapter-title">Chapter 5: The Truth Revealed</h2>
+            <p>At the kingdom's edge, near the Whispering Woods, the trail ended at a small, hidden cave.</p>
+            <p>Wisp's ears twitched. "I hear... <span class="sound-effect" onclick="playSound('sniffling')">*sniffling*</span>," he whispered.</p>
+            <p>Inside, mountains of stolen candy glittered under one lantern's light. In the center, surrounded by piles of lollipops and chocolate, sat <span class="character-highlight">Dusk</span>. Her shoulders were <span class="vocab-word" onclick="showDefinition(this, 'Sitting with droopy shoulders when sad')">slumped<span class="definition"></span></span>, and tears ran down her glittery cheeks.</p>
+
+            <div class="think-box">
+                <div class="think-title">💭 Empathy Question:</div>
+                How do you think Dusk is feeling? Have you ever felt left out like she does?
+            </div>
+        </div>
+
+        <div class="chapter">
+            <h2 class="chapter-title">Chapter 6: Working Together</h2>
+            <p>"You haven't ruined anything," Peregrine said gently. "This job was too big for one person. But everything's better with a team. We'll help you fix this."</p>
+            <p>The three friends worked through the night, making a great plan. Each friend used their special <span class="vocab-word" onclick="showDefinition(this, 'Things you are good at')">strengths<span class="definition"></span></span>:</p>
+            <ul>
+                <li>🤴 Peregrine sorted sweets into piles</li>
+                <li>🦇 Wisp flew to find missed wrappers</li>
+                <li>✨ Dusk used her kingdom knowledge to guide them</li>
+            </ul>
+
+            <div class="activity-box">
+                <strong>🌟 Teamwork Activity:</strong> What special skills do you have that could help your friends?
+                <br><textarea placeholder="Write about your special abilities..." style="width: 100%; margin-top: 10px; padding: 10px; border-radius: 5px;"></textarea>
+            </div>
+        </div>
+
+        <div class="chapter">
+            <h2 class="chapter-title">Chapter 7: A Happy Ending</h2>
+            <p>When the sun's first rays hit the horizon, all the candy was perfectly ready for the Great Candy Haul. The <span class="vocab-word" onclick="showDefinition(this, 'Taking something (but they were fixing it, not stealing!)')">heist<span class="definition"></span></span> had become something magical.</p>
+            <p>Peregrine realized he had found the greatest <span class="vocab-word" onclick="showDefinition(this, 'Something very valuable and special')">treasure<span class="definition"></span></span> of all: not a mountain of sweets, but the perfect adventure crew—and two friends who understood his wandering heart.</p>
+            <p>He smiled. He wasn't just a lonely prince anymore. He was part of something magical. ✨</p>
+
+            <div class="think-box">
+                <div class="think-title">❤️ Heart Question:</div>
+                What did Peregrine learn about friendship? What makes someone a good friend?
+            </div>
+        </div>
+
+        <div class="quiz-section">
+            <h2>🧠 Final Comprehension Quiz</h2>
+            <div style="margin-bottom: 25px;">
+                <div class="quiz-question"><strong>1. What was the main problem in the story?</strong></div>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Prince Peregrine lost his crown</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">All the Halloween candy disappeared</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Wisp couldn't fly properly</div>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 25px;">
+                <div class="quiz-question"><strong>2. Why did Dusk take all the candy?</strong></div>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">She was hungry and wanted to eat it all</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">She wanted to help but felt left out</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">She wanted to ruin Halloween</div>
+                </div>
+            </div>
+
+            <div style="margin-bottom: 25px;">
+                <div class="quiz-question"><strong>3. What did the friends learn about teamwork?</strong></div>
+                <div class="quiz-options">
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">It's better to work alone</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, true)">Everyone has special strengths that help the group</div>
+                    <div class="quiz-option" onclick="checkAnswer(this, false)">Only leaders can make decisions</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="activity-box">
+            <h3>🎨 Creative Activities</h3>
+            <p><strong>Drawing Prompt:</strong> Draw your favorite scene from the story with all three friends!</p>
+            <p><strong>Writing Prompt:</strong> What adventure should Peregrine, Wisp, and Dusk go on next?</p>
+            <textarea placeholder="Write your story idea here..." style="width: 100%; height: 100px; margin-top: 10px; padding: 10px; border-radius: 5px;"></textarea>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; font-size: 1.5em; color: #ff8c42;">
+            🌟 The End 🌟
+            <br><span style="font-size: 0.8em; color: #a8d8ea;">Remember: The best treasures are the friends who go on adventures with you!</span>
+        </div>
+    </div>
+
+    <script>
+        // NOTE: This code is for illustration and is not meant to be executable
+        let currentProgress = 0;
+        let isReading = false;
+
+        function showDefinition(element, definition) {
+            const defElement = element.querySelector('.definition');
+            defElement.textContent = definition;
+            defElement.classList.toggle('show');
+            
+            document.querySelectorAll('.definition').forEach(def => {
+                if (def !== defElement) {
+                    def.classList.remove('show');
+                }
+            });
+            
+            updateProgress();
+        }
+
+        function showCharacterInfo(character) {
+            const info = {
+                'Peregrine': '🤴 Prince Peregrine loves adventures and wants friends who share his love of exploring!',
+                'Wisp': '🦇 Wisp is a friendly bat with amazing night vision who prefers quiet flights to loud crowds.',
+                'Dusk': '✨ Dusk the Shadow-Weaver uses magic and glitter, but sometimes feels left out and lonely.'
+            };
+            
+            // This is a placeholder for a custom UI message box.
+            console.log(info[character]);
+            updateProgress();
+        }
+
+        function playSound(soundType) {
+            const sounds = {
+                'whoosh': new Tone.NoiseSynth({
+                    "volume": -10,
+                    "noise": {
+                        "type": "white"
+                    },
+                    "envelope": {
+                        "attack": 0.001,
+                        "decay": 0.2,
+                        "sustain": 0.05
+                    }
+                }).toDestination(),
+                'gasp': new Tone.Synth({
+                    "volume": -15,
+                    "oscillator": {
+                        "type": "sawtooth"
+                    },
+                    "envelope": {
+                        "attack": 0.01,
+                        "decay": 0.1,
+                        "sustain": 0.1,
+                        "release": 0.1
+                    }
+                }).toDestination(),
+                'spooky': new Tone.Synth({
+                    "volume": -20,
+                    "oscillator": {
+                        "type": "sine"
+                    },
+                    "envelope": {
+                        "attack": 2,
+                        "decay": 1,
+                        "sustain": 0.5,
+                        "release": 2
+                    }
+                }).toDestination(),
+                'sniffling': new Tone.NoiseSynth({
+                    "volume": -10,
+                    "noise": {
+                        "type": "brown"
+                    },
+                    "envelope": {
+                        "attack": 0.01,
+                        "decay": 0.1,
+                        "sustain": 0.05,
+                        "release": 0.1
+                    }
+                }).toDestination()
+            };
+            
+            if (soundType === 'whoosh') {
+                sounds.whoosh.triggerAttackRelease("4n");
+            } else if (soundType === 'gasp') {
+                sounds.gasp.triggerAttackRelease("G4", "8n");
+            } else if (soundType === 'spooky') {
+                sounds.spooky.triggerAttackRelease("C3", "4n");
+            } else if (soundType === 'sniffling') {
+                sounds.sniffling.triggerAttackRelease("16n");
+            }
+            updateProgress();
+        }
+
+        function checkAnswer(element, isCorrect) {
+            const options = element.parentNode.querySelectorAll('.quiz-option');
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+                opt.style.pointerEvents = 'none';
+            });
+            
+            if (isCorrect) {
+                element.classList.add('correct');
+                console.log('Correct! Great job!');
+            } else {
+                element.classList.add('incorrect');
+                console.log('Incorrect. Try again!');
+            }
+            updateProgress();
+        }
+
+        function toggleReadAloud() {
+            if (isReading) {
+                window.speechSynthesis.cancel();
+                isReading = false;
+            } else {
+                const textToRead = document.querySelector('.container').innerText;
+                const utterance = new SpeechSynthesisUtterance(textToRead);
+                utterance.lang = 'en-US';
+                window.speechSynthesis.speak(utterance);
+                isReading = true;
+            }
+        }
+
+        function adjustFontSize(direction) {
+            const body = document.body;
+            let currentSize = parseFloat(window.getComputedStyle(body, null).getPropertyValue('font-size'));
+            if (direction === '+') {
+                body.style.fontSize = (currentSize + 2) + 'px';
+            } else {
+                body.style.fontSize = (currentSize - 2) + 'px';
+            }
+            updateProgress();
+        }
+        
+        function updateProgress() {
+            const totalInteractiveElements = document.querySelectorAll('.vocab-word, .character-highlight, .sound-effect, .quiz-option, .control-btn').length;
+            const interactedElements = document.querySelectorAll('.vocab-word:hover, .character-highlight:hover, .sound-effect:hover, .quiz-option.correct, .quiz-option.incorrect').length;
+            const progressBar = document.getElementById('progressBar');
+            if (progressBar) {
+                const progress = (interactedElements / totalInteractiveElements) * 100;
+                progressBar.style.width = progress + '%';
+            }
+        }
+        
+    </script>
+</body>
+</html>
