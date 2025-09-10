@@ -1,90 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Halloween Heist – Free Sample | The Wandering Princess Emporium</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        body {
-            background-color: #ffffff;
-            color: #333333;
-            font-family: sans-serif;
-        }
-        header {
-            background: linear-gradient(135deg, #4fc3f7 0%, #ffeb3b 100%);
-            padding: 1.5rem;
-            text-align: center;
-            border-bottom: 4px solid #4fc3f7;
-        }
-        header h1 {
-            font-size: 2rem;
-            font-weight: 800;
-            color: #333333;
-        }
-        header p {
-            font-size: 1.1rem;
-            color: #555555;
-        }
-        .content {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 1.5rem;
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.05);
-            line-height: 1.6;
-        }
-        .back-button {
-            display: inline-block;
-            background-color: #4fc3f7;
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 9999px;
-            font-weight: bold;
-            text-decoration: none;
-            margin-top: 1.5rem;
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        }
-        .back-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 20px rgba(79, 195, 247, 0.4);
-        }
-        .book-cover {
-            border: 4px solid #ffffff;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
-            border-radius: 12px;
-            margin-bottom: 1.5rem;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>The Halloween Heist – Magical Preview</title>
+  <style>
+    body {
+      background-color: #1a1a2e;
+      color: #fff;
+      font-family: 'Cinzel', serif;
+      text-align: center;
+      padding: 50px 20px;
+    }
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+    p.intro {
+      font-style: italic;
+      font-size: 1.2em;
+      margin-bottom: 30px;
+      color: #f0f0f0;
+    }
+    button {
+      margin: 15px;
+      padding: 12px 24px;
+      font-size: 18px;
+      background-color: #e94560;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #f08a5d;
+    }
+    input[type="range"] {
+      width: 200px;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
 
-    <header>
-        <h1>The Wandering Princess Emporium</h1>
-        <p>Enchanting Adventures for Young Wanderers</p>
-    </header>
+  <h1>✨ The Halloween Heist ✨</h1>
 
-    <div class="content">
-        <img src="../../github.image2.jpg" alt="The Halloween Heist Book Cover" class="book-cover">
+  <p class="intro">
+    Welcome to The Wandering Prince’s Emporium. As the moon rises over the cobbled streets, whispers stir and wings flutter. Let the magic begin...
+  </p>
 
-        <h2 class="text-2xl font-bold mb-4">The Halloween Heist – Free Sample</h2>
+  <!-- 🎧 Hidden Audio Assets -->
+  <div class="audio-assets" style="display: none;">
+    <audio id="narration" src="welcome-voiceover.mp3" preload="auto"></audio>
+    <audio id="ambient" src="ambient-mystery.mp3" loop preload="auto"></audio>
+    <audio id="intro" src="intro-enchant.mp3" preload="auto"></audio>
+    <audio id="reveal" src="magical-reveal.mp3" preload="auto"></audio>
+    <audio id="whoosh" src="sparkly-whoosh.mp3" preload="auto"></audio>
+    <audio id="bat1" src="bat-chirp-1.mp3" preload="auto"></audio>
+    <audio id="bat2" src="bat-chirp-2.mp3" preload="auto"></audio>
+    <audio id="batFlutter" src="bat-wing-flutter.mp3" preload="auto"></audio>
+    <audio id="hawk" src="hawk-call.mp3" preload="auto"></audio>
+    <audio id="spook1" src="paratoon-spook.mp3" preload="auto"></audio>
+    <audio id="spook2" src="spook-2.mp3" preload="auto"></audio>
+    <audio id="bunny" src="bunny-swoosh.mp3" preload="auto"></audio>
+    <audio id="peace" src="peace-thought.mp3" preload="auto"></audio>
+  </div>
 
-        <p><em>Not all tricks are harmless. Not all treats are earned.</em></p>
+  <!-- 🎬 Start Button -->
+  <button onclick="startScene()">Start Magical Scene</button>
 
-        <p>
-            On a crisp October night, Prince Peregrine tightened his red scarf and glanced up at the glowing full moon. 
-            Somewhere in the shadows, Wisp the Bat fluttered silently, keeping watch. 
-            The cobblestone streets of the kingdom were littered with golden leaves, and the air smelled faintly of cinnamon and adventure...
-        </p>
+  <!-- 🔇 Mute & Volume Controls -->
+  <div style="margin-top: 20px;">
+    <button onclick="toggleMute()">🔇 Mute / Unmute</button><br>
+    <input type="range" min="0" max="1" step="0.1" value="1" onchange="setVolume(this.value)">
+  </div>
 
-        <p>
-            The sound of distant laughter echoed through the alleys, but Peregrine knew this was no ordinary Halloween. 
-            A mysterious thief had been spotted near the royal pumpkin patch, and the night’s magic felt… different.
-        </p>
+  <!-- 🧠 JavaScript -->
+  <script>
+    function startScene() {
+      document.getElementById('narration').play(); // Voiceover intro
+      setTimeout(() => document.getElementById('ambient').play(), 1000); // Background music
+      setTimeout(() => document.getElementById('intro').play(), 3000); // Intro music
+      setTimeout(() => document.getElementById('reveal').play(), 5000); // Magical reveal
+      setTimeout(() => document.getElementById('whoosh').play(), 7000); // Sparkly whoosh
+      setTimeout(() => document.getElementById('bat1').play(), 9000); // Bat chirp 1
+      setTimeout(() => document.getElementById('bat2').play(), 10000); // Bat chirp 2
+      setTimeout(() => document.getElementById('batFlutter').play(), 11000); // Bat flutter
+      setTimeout(() => document.getElementById('hawk').play(), 13000); // Hawk call
+      setTimeout(() => document.getElementById('spook1').play(), 15000); // Spooky effect 1
+      setTimeout(() => document.getElementById('spook2').play(), 16000); // Spooky effect 2
+      setTimeout(() => document.getElementById('bunny').play(), 18000); // Bunny swoosh
+      setTimeout(() => document.getElementById('peace').play(), 20000); // Peaceful thought
+    }
 
-        <a href="../../index.html" class="back-button">⬅ Back to Homepage</a>
-    </div>
+    function toggleMute() {
+      const audios = document.querySelectorAll('audio');
+      audios.forEach(audio => audio.muted = !audio.muted);
+    }
+
+    function setVolume(level) {
+      const audios = document.querySelectorAll('audio');
+      audios.forEach(audio => audio.volume = level);
+    }
+  </script>
 
 </body>
 </html>
